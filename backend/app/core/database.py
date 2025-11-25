@@ -11,16 +11,17 @@ from typing import Optional
 logger = get_logger(__name__)
 
 # Database engine with connection pooling and health checks
-# pool_pre_ping=True ensures connections are tested before use
+# pool_pre_ping ensures connections are tested before use
 # This helps handle transient connection failures automatically
+# Settings are configurable via environment variables for production tuning
 engine = create_engine(
     settings.DATABASE_URL,
-    pool_pre_ping=True,  # Test connections before using them
-    pool_size=10,
-    max_overflow=20,
-    pool_recycle=3600,  # Recycle connections after 1 hour
+    pool_pre_ping=settings.DB_POOL_PRE_PING,
+    pool_size=settings.DB_POOL_SIZE,
+    max_overflow=settings.DB_MAX_OVERFLOW,
+    pool_recycle=settings.DB_POOL_RECYCLE,
     connect_args={
-        "connect_timeout": 10,  # 10 second connection timeout
+        "connect_timeout": settings.DB_CONNECT_TIMEOUT,
     }
 )
 

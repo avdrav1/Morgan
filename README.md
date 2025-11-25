@@ -121,3 +121,60 @@ celery -A app.tasks.celery_app beat --loglevel=info
 ## API Documentation
 
 Once running, visit http://localhost:8000/docs for interactive API documentation.
+
+## Database Backup System
+
+The application includes a comprehensive automated backup system for PostgreSQL.
+
+### Quick Setup
+
+```bash
+# Set up automated daily backups
+./scripts/setup-backup-cron.sh
+```
+
+### Manual Operations
+
+```bash
+# Create manual backup
+./scripts/backup-database.sh
+
+# Restore from backup
+./scripts/restore-database.sh backups/daily/backup_file.sql.gz
+
+# Test backup system
+./scripts/test-backup-system.sh
+```
+
+### Features
+
+- **Automated backups**: Daily backups via cron (2:00 AM by default)
+- **Retention policy**: 7 daily, 4 weekly, 3 monthly backups
+- **Compression**: Automatic gzip compression
+- **Encryption**: Optional AES-256 encryption
+- **Remote backup**: Support for S3, rsync, rclone
+- **Easy restoration**: Simple restore from any backup
+
+### Documentation
+
+- [Backup System Guide](scripts/BACKUP_SYSTEM.md) - Complete documentation
+- [Quick Reference](scripts/BACKUP_QUICK_REFERENCE.md) - Common commands
+
+### Environment Variables
+
+Add to your `.env` file:
+
+```bash
+# Required
+POSTGRES_DB=accountability_db
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_password
+
+# Optional
+ENCRYPT_BACKUPS=true
+BACKUP_ENCRYPTION_KEY=your_encryption_key
+REMOTE_BACKUP=true
+REMOTE_BACKUP_PATH=/path/to/remote/storage
+```
+
+For more details, see [scripts/BACKUP_SYSTEM.md](scripts/BACKUP_SYSTEM.md).

@@ -1,0 +1,16 @@
+# SSL certificates and keys
+ssl/*.pem
+ssl/*.key
+ssl/*.crt
+ssl/*.csr
+
+# Let's Encrypt certificates
+letsencrypt/
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*~

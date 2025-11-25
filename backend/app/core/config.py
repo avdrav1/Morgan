@@ -11,6 +11,13 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "postgresql://accountability:accountability_dev@localhost:5432/accountability_db"
     
+    # Database Connection Pool Settings (production optimized)
+    DB_POOL_SIZE: int = 10
+    DB_MAX_OVERFLOW: int = 20
+    DB_POOL_RECYCLE: int = 3600  # 1 hour
+    DB_POOL_PRE_PING: bool = True
+    DB_CONNECT_TIMEOUT: int = 10
+    
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"
     
@@ -47,6 +54,13 @@ class Settings(BaseSettings):
     # Webhooks
     WEBHOOK_SECRET: Optional[str] = None
     
+    # Gunicorn Settings
+    GUNICORN_WORKERS: int = 4
+    GUNICORN_TIMEOUT: int = 120
+    
+    # Logging
+    LOG_LEVEL: str = "INFO"
+    
     class Config:
         env_file = ".env"
         case_sensitive = True
@@ -58,6 +72,13 @@ class Settings(BaseSettings):
             self.CELERY_BROKER_URL = self.REDIS_URL
         if not self.CELERY_RESULT_BACKEND:
             self.CELERY_RESULT_BACKEND = self.REDIS_URL
+        
+        # Production-specific settings
+        if self.ENVIRONMENT == "production":
+            self.DEBUG = False
+            # Ensure production has higher log level
+            if self.LOG_LEVEL == "DEBUG":
+                self.LOG_LEVEL = "INFO"
 
 
 settings = Settings()

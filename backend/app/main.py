@@ -6,8 +6,8 @@ from app.core.logging_config import setup_logging, get_logger
 from app.core.middleware import CorrelationIdMiddleware
 from app.api import auth, projects, tasks, users, check_ins, discord, metrics, webhooks
 
-# Setup structured logging
-setup_logging(log_level="INFO" if not settings.DEBUG else "DEBUG")
+# Setup structured logging with configurable log level
+setup_logging(log_level=settings.LOG_LEVEL)
 logger = get_logger(__name__)
 
 app = FastAPI(
