@@ -73,7 +73,7 @@
   - Configure cron job for automated backups
   - _Requirements: 10.1, 10.2, 10.3_
 
-- [-] 10. Create deployment script
+- [x] 10. Create deployment script
   - Write deploy.sh script for automated deployment
   - Include pre-deployment checks (environment variables, ports)
   - Add service startup with dependency ordering
@@ -81,7 +81,7 @@
   - Add rollback capability
   - _Requirements: 1.1, 1.2, 1.3_
 
-- [ ] 11. Configure logging and log rotation
+- [x] 11. Configure logging and log rotation
   - Set up persistent volume for logs
   - Configure JSON-formatted logging for all services
   - Set up log rotation with size and time limits

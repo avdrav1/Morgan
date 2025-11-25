@@ -32,6 +32,40 @@ Comprehensive backup automation system for PostgreSQL database. See [BACKUP_SYST
 
 ---
 
+### Log Management System
+
+Comprehensive logging and log rotation system for production deployments. See [LOGGING_CONFIGURATION.md](../LOGGING_CONFIGURATION.md) for detailed documentation.
+
+**Quick Start**:
+```bash
+# View logs from a service
+./scripts/view-logs.sh backend
+
+# Follow logs in real-time
+./scripts/view-logs.sh backend --follow
+
+# Run manual log rotation
+./scripts/rotate-logs.sh
+
+# Set up automated log rotation (daily at 2 AM)
+sudo ./scripts/setup-log-rotation-cron.sh
+```
+
+**Features**:
+- Structured JSON logging for all services
+- Automatic log rotation with compression
+- Persistent log storage in Docker volumes
+- Easy log viewing and searching
+- Automated cleanup with retention policies
+- PII redaction for privacy protection
+
+**Scripts**:
+- `view-logs.sh`: View and follow logs from services
+- `rotate-logs.sh`: Manually rotate and clean up logs
+- `setup-log-rotation-cron.sh`: Set up automated daily log rotation
+
+---
+
 ### validate-env.sh
 
 Bash script for validating environment variable configuration.

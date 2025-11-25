@@ -11,6 +11,7 @@ services:
       - backend-network
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - app_logs:/var/log/app
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
@@ -29,8 +30,11 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: "50m"
+        max-file: "5"
+        compress: "true"
+        labels: "service,environment"
+        tag: "{{.Name}}/{{.ID}}"
 
   # Redis
   redis:
@@ -41,6 +45,7 @@ services:
     volumes:
       - redis_data:/data
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - app_logs:/var/log/app
     restart: unless-stopped
     command: redis-server /usr/local/etc/redis/redis.conf
     healthcheck:
@@ -60,8 +65,11 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: "50m"
+        max-file: "5"
+        compress: "true"
+        labels: "service,environment"
+        tag: "{{.Name}}/{{.ID}}"
 
   # FastAPI Backend
   backend:
@@ -73,6 +81,8 @@ services:
     networks:
       - backend-network
       - frontend-network
+    volumes:
+      - app_logs:/var/log/app
     environment:
       # Database
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -90,6 +100,7 @@ services:
       - ENVIRONMENT=production
       - DEBUG=false
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - LOG_FORMAT=${LOG_FORMAT:-json}
       # URLs
       - FRONTEND_URL=${FRONTEND_URL}
       - BACKEND_URL=${BACKEND_URL}
@@ -128,8 +139,11 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
-        max-file: "5"
+        max-size: "100m"
+        max-file: "10"
+        compress: "true"
+        labels: "service,environment"
+        tag: "{{.Name}}/{{.ID}}"
 
   # Celery Worker
   celery-worker:
@@ -140,6 +154,8 @@ services:
     container_name: accountability-celery-worker-prod
     networks:
       - backend-network
+    volumes:
+      - app_logs:/var/log/app
     environment:
       # Database
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -156,6 +172,7 @@ services:
       - ENVIRONMENT=production
       - DEBUG=false
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - LOG_FORMAT=${LOG_FORMAT:-json}
       # Encryption
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}
     depends_on:
@@ -181,8 +198,11 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: "100m"
+        max-file: "7"
+        compress: "true"
+        labels: "service,environment"
+        tag: "{{.Name}}/{{.ID}}"
     command: celery -A app.tasks.celery_app worker --loglevel=info --concurrency=2
 
   # Celery Beat (Scheduler)
@@ -194,6 +214,8 @@ services:
     container_name: accountability-celery-beat-prod
     networks:
       - backend-network
+    volumes:
+      - app_logs:/var/log/app
     environment:
       # Database
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -210,6 +232,7 @@ services:
       - ENVIRONMENT=production
       - DEBUG=false
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - LOG_FORMAT=${LOG_FORMAT:-json}
       # Encryption
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}
     depends_on:
@@ -235,8 +258,11 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: "50m"
+        max-file: "5"
+        compress: "true"
+        labels: "service,environment"
+        tag: "{{.Name}}/{{.ID}}"
     command: celery -A app.tasks.celery_app beat --loglevel=info --pidfile=/tmp/celerybeat.pid
 
   # Discord Bot
@@ -248,11 +274,14 @@ services:
     container_name: accountability-discord-bot-prod
     networks:
       - backend-network
+    volumes:
+      - app_logs:/var/log/app
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - API_BASE_URL=http://backend:8000
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       - ENVIRONMENT=production
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
     depends_on:
       backend:
         condition: service_healthy
@@ -276,8 +305,11 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: "50m"
+        max-file: "5"
+        compress: "true"
+        labels: "service,environment"
+        tag: "{{.Name}}/{{.ID}}"
 
   # React Frontend
   frontend:
@@ -309,8 +341,11 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: "50m"
+        max-file: "5"
+        compress: "true"
+        labels: "service,environment"
+        tag: "{{.Name}}/{{.ID}}"
 
   # Nginx Reverse Proxy
   nginx:
@@ -352,8 +387,11 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
-        max-file: "5"
+        max-size: "100m"
+        max-file: "10"
+        compress: "true"
+        labels: "service,environment"
+        tag: "{{.Name}}/{{.ID}}"
 
 networks:
   backend-network:
@@ -374,3 +412,5 @@ volumes:
     name: accountability-certbot-www
   nginx_certs:
     name: accountability-nginx-certs
+  app_logs:
+    name: accountability-app-logs
