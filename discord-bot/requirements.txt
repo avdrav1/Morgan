@@ -1,0 +1,15 @@
+# Discord
+discord.py==2.3.2
+
+# HTTP Client
+httpx==0.25.2
+
+# Database
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+
+# Configuration
+python-dotenv==1.0.0
+
+# Async utilities
+aiohttp==3.9.1

@@ -1,0 +1,22 @@
+# Environment files
+.env
+backend/.env
+discord-bot/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env.*
+.hypothesis/
+.pytest_cache/
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
