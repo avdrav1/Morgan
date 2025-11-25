@@ -20,3 +20,6 @@ frontend/node_modules/
 .vscode/
 .idea/
 .DS_Store
+
+# Documentation with sensitive examples
+docs/ENVIRONMENT_VARIABLES.md
