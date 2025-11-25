@@ -461,7 +461,7 @@ openssl rand -hex 32
 
 **Obtain From**: https://discord.com/developers/applications
 
-**Example**: `MTQ0MTM4ODc5MTE5NjY4MDMzMg.GChh66.jGmuL_gKvR0Xivi-P6Ja6tNwuAd-VWrXx-X-2U`
+**Example**: `MTxxxxxxxxxxxxxxxxxx.xxxxxx.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
 
 **Notes**:
 - Provides full access to your Discord bot
